@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — SkillSwap{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+
+    <div class="card card-glass auth-card signup-card">
+        <div class="auth-header">
+            <span class="logo-mark" style="display:flex; align-items:center; justify-content:center;">S</span>
+            <h1>Join SkillSwap</h1>
+            <p>Trade what you know for what you want to learn.</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('auth.signup') }}" enctype="multipart/form-data" novalidate>
+
+            <!-- Profile Image Upload -->
+            <div class="image-upload">
+                <div class="image-upload-preview" id="imagePreview">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div>
+                    <label class="btn btn-secondary btn-sm image-upload-btn" for="profile_image">Upload Photo</label>
+                    <input type="file" id="profile_image" name="profile_image" accept="image/*" style="display:none;">
+                    <p class="form-hint">PNG or JPG, up to 3MB. Optional.</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name</label>
+                    <input class="form-input" type="text" id="name" name="name" placeholder="Jordan Lee" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="location">Location</label>
+                    <input class="form-input" type="text" id="location" name="location" placeholder="Kolkata, India">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email address</label>
+                <input class="form-input" type="email" id="email" name="email" placeholder="you@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <div class="password-field">
+                    <input class="form-input" type="password" id="password" name="password" placeholder="At least 8 characters" required minlength="8">
+                    <button type="button" class="password-toggle" data-target="password" aria-label="Show password">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="bio">Short Bio</label>
+                <textarea class="form-textarea" id="bio" name="bio" placeholder="Tell people a bit about yourself and what you're passionate about..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="skills_teach">Skills I Can Teach</label>
+                <input class="form-input" type="text" id="skills_teach" name="skills_teach" placeholder="Python, Public Speaking, Excel">
+                <p class="form-hint">Separate multiple skills with commas.</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="skills_learn">Skills I Want to Learn</label>
+                <input class="form-input" type="text" id="skills_learn" name="skills_learn" placeholder="Graphic Design, Spanish, Guitar">
+                <p class="form-hint">Separate multiple skills with commas.</p>
+            </div>
+
+            <label class="checkbox-row" style="margin-bottom: var(--space-5);">
+                <input type="checkbox" required>
+                I agree to the <a href="#" style="color:var(--color-primary); font-weight:600;">Terms of Service</a> and <a href="#" style="color:var(--color-primary); font-weight:600;">Privacy Policy</a>
+            </label>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Create My Account</button>
+        </form>
+
+        <div class="auth-switch">
+            Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+{% endblock %}

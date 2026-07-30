@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Swap Requests — SkillSwap{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/swap-requests.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container swap-page">
+
+    <div class="swap-page-header">
+        <h1>Swap Requests</h1>
+        <p>Track every skill exchange you've sent or received.</p>
+    </div>
+
+    <div class="tabs" id="swapTabs">
+        <button class="tab-btn active" data-tab="incoming">Incoming ({{ incoming|length }})</button>
+        <button class="tab-btn" data-tab="outgoing">Outgoing ({{ outgoing|length }})</button>
+        <button class="tab-btn" data-tab="pending">Pending ({{ pending|length }})</button>
+        <button class="tab-btn" data-tab="accepted">Accepted ({{ accepted|length }})</button>
+        <button class="tab-btn" data-tab="rejected">Rejected ({{ rejected|length }})</button>
+    </div>
+
+    <!-- ---------- INCOMING ---------- -->
+    <div class="swap-tab-panel active" id="panel-incoming">
+        <div class="swap-list">
+            {% for r in incoming %}
+            <div class="card swap-card">
+                <div class="swap-user">
+                    <img src="{{ url_for('static', filename='uploads/profile_pics/' + r.other_image) }}" class="avatar avatar-md" alt=""
+                         onerror="this.src='{{ url_for('static', filename='images/illustrations/default-avatar.png') }}'">
+                    <div><h4>{{ r.other_name }}</h4><span>wants to swap with you</span></div>
+                </div>
+                <div class="swap-exchange">
+                    <span class="chip chip-teach">{{ r.offered_skill }}</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                    <span class="chip chip-learn">{{ r.wanted_skill }}</span>
+                </div>
+                {% if r.status == 'pending' %}
+                <div class="swap-card-actions">
+                    <form method="POST" action="{{ url_for('swap.respond_request', request_id=r.id, action='accepted') }}">
+                        <button type="submit" class="btn btn-primary btn-sm">Accept</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('swap.respond_request', request_id=r.id, action='rejected') }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Decline</button>
+                    </form>
+                </div>
+                {% else %}
+                <span class="badge badge-{{ r.status }}"><span class="badge-dot"></span>{{ r.status|capitalize }}</span>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <p>No incoming requests yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ---------- OUTGOING ---------- -->
+    <div class="swap-tab-panel" id="panel-outgoing">
+        <div class="swap-list">
+            {% for r in outgoing %}
+            <div class="card swap-card">
+                <div class="swap-user">
+                    <img src="{{ url_for('static', filename='uploads/profile_pics/' + r.other_image) }}" class="avatar avatar-md" alt=""
+                         onerror="this.src='{{ url_for('static', filename='images/illustrations/default-avatar.png') }}'">
+                    <div><h4>{{ r.other_name }}</h4><span>you sent a request</span></div>
+                </div>
+                <div class="swap-exchange">
+                    <span class="chip chip-teach">{{ r.offered_skill }}</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                    <span class="chip chip-learn">{{ r.wanted_skill }}</span>
+                </div>
+                <span class="badge badge-{{ r.status }}"><span class="badge-dot"></span>{{ r.status|capitalize }}</span>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
+                <p>You haven't sent any requests yet. <a href="{{ url_for('main.browse_skills') }}" style="color: var(--color-primary); font-weight: 600;">Browse skills</a> to find a match.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ---------- PENDING / ACCEPTED / REJECTED (combined incoming + outgoing) ---------- -->
+    {% for group_name, group_list in [('pending', pending), ('accepted', accepted), ('rejected', rejected)] %}
+    <div class="swap-tab-panel" id="panel-{{ group_name }}">
+        <div class="swap-list">
+            {% for r in group_list %}
+            <div class="card swap-card">
+                <div class="swap-user">
+                    <img src="{{ url_for('static', filename='uploads/profile_pics/' + r.other_image) }}" class="avatar avatar-md" alt=""
+                         onerror="this.src='{{ url_for('static', filename='images/illustrations/default-avatar.png') }}'">
+                    <div><h4>{{ r.other_name }}</h4><span>{{ 'they sent this' if r.receiver_id == session['user_id'] else 'you sent this' }}</span></div>
+                </div>
+                <div class="swap-exchange">
+                    <span class="chip chip-teach">{{ r.offered_skill }}</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                    <span class="chip chip-learn">{{ r.wanted_skill }}</span>
+                </div>
+                <span class="badge badge-{{ r.status }}"><span class="badge-dot"></span>{{ r.status|capitalize }}</span>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                <p>Nothing here yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/swap-requests.js') }}"></script>
+{% endblock %}

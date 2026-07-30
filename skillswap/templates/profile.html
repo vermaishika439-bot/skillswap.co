@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.name }} — SkillSwap{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: var(--space-6);">
+
+    <div class="profile-banner"></div>
+
+    <div class="profile-header">
+        <img src="{{ url_for('static', filename='uploads/profile_pics/' + profile_user.profile_image) }}"
+             class="avatar avatar-xl" alt="{{ profile_user.name }}"
+             onerror="this.src='{{ url_for('static', filename='images/illustrations/default-avatar.png') }}'">
+        <div class="profile-header-info">
+            <h1>{{ profile_user.name }}</h1>
+            <div class="location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                {{ profile_user.location or "Location not set" }}
+            </div>
+            <div class="stars">
+                {% for i in range(5) %}
+                <svg viewBox="0 0 24 24" fill="{{ 'currentColor' if i < avg_rating|round(0,'floor') else 'none' }}" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                {% endfor %}
+                <span class="rating-text">{{ avg_rating }} ({{ avg_rating_total }} reviews)</span>
+            </div>
+        </div>
+        {% if not is_own_profile and session.get('user_id') %}
+        <button class="btn btn-accent btn-lg" onclick="document.getElementById('swapModal').classList.add('open')">
+            Send Swap Request
+        </button>
+        {% elif is_own_profile %}
+        <a href="{{ url_for('profile.settings') }}" class="btn btn-secondary btn-lg">Edit Profile</a>
+        {% endif %}
+    </div>
+
+    <div class="profile-layout">
+        <div>
+            <div class="card profile-section">
+                <h3>About</h3>
+                <p class="profile-bio">{{ profile_user.bio or "This user hasn't written a bio yet." }}</p>
+            </div>
+
+            <div class="card profile-section">
+                <h3>Skills Offered</h3>
+                <div class="chip-group">
+                    {% for s in skills_offered %}<span class="chip chip-teach">{{ s.skill_name }}</span>{% else %}<p class="form-hint">No skills listed yet.</p>{% endfor %}
+                </div>
+            </div>
+
+            <div class="card profile-section">
+                <h3>Skills Wanted</h3>
+                <div class="chip-group">
+                    {% for s in skills_wanted %}<span class="chip chip-learn">{{ s.skill_name }}</span>{% else %}<p class="form-hint">No skills listed yet.</p>{% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card profile-section">
+                <h3>Reviews</h3>
+                {% for r in ratings %}
+                <div class="review-item">
+                    <div class="review-item-top">
+                        <h5>{{ r.rater_name }}</h5>
+                        <div class="stars">
+                            {% for i in range(5) %}
+                            <svg viewBox="0 0 24 24" fill="{{ 'currentColor' if i < r.stars else 'none' }}" stroke="currentColor" stroke-width="1.5" width="12" height="12"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <p>{{ r.comment }}</p>
+                </div>
+                {% else %}
+                <p class="form-hint">No reviews yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SEND SWAP REQUEST MODAL
+     ============================================================ -->
+{% if not is_own_profile and session.get('user_id') %}
+<div class="modal-overlay" id="swapModal">
+    <div class="card modal-box">
+        <div class="modal-header">
+            <h3>Send a Swap Request to {{ profile_user.name }}</h3>
+            <button class="modal-close" onclick="document.getElementById('swapModal').classList.remove('open')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <form method="POST" action="{{ url_for('swap.send_request', receiver_id=profile_user.id) }}">
+            <div class="form-group">
+                <label class="form-label" for="offered_skill">Skill You'll Teach</label>
+                <input class="form-input" type="text" id="offered_skill" name="offered_skill" placeholder="e.g. Python" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="wanted_skill">Skill You Want From Them</label>
+                <input class="form-input" type="text" id="wanted_skill" name="wanted_skill" placeholder="e.g. Graphic Design" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="message">Message (optional)</label>
+                <textarea class="form-textarea" id="message" name="message" placeholder="Introduce yourself and explain what you're hoping to learn..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Send Request</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

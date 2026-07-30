@@ -1,0 +1,182 @@
+/* ============================================================
+   navbar.css
+   Sticky top navigation. Turns into a frosted-glass bar once the
+   page scrolls (class "scrolled" toggled by static/js/main.js).
+   Collapses into a hamburger + slide-down menu on mobile.
+   ============================================================ */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: transparent;
+    transition: var(--transition);
+}
+
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-sm);
+}
+
+body.dark-theme .navbar.scrolled {
+    background: rgba(15, 20, 22, 0.75);
+}
+
+.navbar-inner {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding: var(--space-4) var(--space-5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+}
+
+/* ---- Logo ---- */
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: var(--text-lg);
+    color: var(--color-ink);
+}
+.navbar-logo .logo-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 800;
+    box-shadow: var(--shadow-glow-primary);
+}
+
+/* ---- Nav links ---- */
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+}
+
+.navbar-links a {
+    position: relative;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-slate);
+    padding-block: var(--space-1);
+}
+
+.navbar-links a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    width: 0;
+    height: 2px;
+    background: var(--color-primary);
+    transition: width 0.25s ease, left 0.25s ease;
+}
+
+.navbar-links a:hover {
+    color: var(--color-ink);
+}
+.navbar-links a:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+/* ---- Auth buttons ---- */
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+/* ---- Notification bell ---- */
+.navbar-bell {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--color-slate);
+    transition: var(--transition);
+}
+.navbar-bell:hover { background: var(--color-bg-alt); color: var(--color-ink); }
+.navbar-bell svg { width: 20px; height: 20px; }
+.navbar-bell .bell-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: 2px solid var(--color-surface);
+}
+
+/* ---- User menu ---- */
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+/* ---- Hamburger (mobile) ---- */
+.navbar-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    width: 24px;
+}
+.navbar-toggle span {
+    height: 2px;
+    background: var(--color-ink);
+    border-radius: 2px;
+    transition: var(--transition);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+    .navbar-links {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background: var(--color-surface);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--space-5);
+        gap: var(--space-4);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-150%);
+        opacity: 0;
+        transition: var(--transition);
+        pointer-events: none;
+    }
+    .navbar-links.open {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .navbar-toggle {
+        display: flex;
+    }
+    .navbar-actions .btn-secondary {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-actions .btn-primary span { display: none; }
+}

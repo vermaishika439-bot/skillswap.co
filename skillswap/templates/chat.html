@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Messages — SkillSwap{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container chat-page">
+    <h1 style="margin-bottom: var(--space-5);">Messages</h1>
+
+    <div class="chat-shell">
+
+        <!-- ---------------- SIDEBAR ---------------- -->
+        <div class="chat-sidebar">
+            <div class="chat-sidebar-header">
+                <h3>Conversations</h3>
+            </div>
+            <div class="chat-conversation-list">
+                {% for c in conversations %}
+                <a href="{{ url_for('chat.chat', with_user_id=c.id) }}"
+                   class="chat-conv-item {{ 'active' if active_user and active_user.id == c.id }}">
+                    <img src="{{ url_for('static', filename='uploads/profile_pics/' + c.profile_image) }}" class="avatar avatar-md" alt=""
+                         onerror="this.src='{{ url_for('static', filename='images/illustrations/default-avatar.png') }}'">
+                    <div class="conv-info">
+                        <h4>{{ c.name }}</h4>
+                        <p>Tap to view conversation</p>
+                    </div>
+                </a>
+                {% else %}
+                <div class="empty-state">
+                    <p>No conversations yet. Send a swap request to start chatting!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ---------------- CONVERSATION AREA ---------------- -->
+        <div class="chat-main">
+            {% if active_user %}
+                <div class="chat-main-header">
+                    <img src="{{ url_for('static', filename='uploads/profile_pics/' + active_user.profile_image) }}" class="avatar avatar-sm" alt=""
+                         onerror="this.src='{{ url_for('static', filename='images/illustrations/default-avatar.png') }}'">
+                    <div>
+                        <h4>{{ active_user.name }}</h4>
+                        <span>● Online</span>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    {% for m in active_messages %}
+                    <div class="message-bubble {{ 'sent' if m.sender_id == session['user_id'] else 'received' }}">
+                        {{ m.content }}
+                        <span class="message-time">{{ m.sent_at }}</span>
+                    </div>
+                    {% else %}
+                    <div class="chat-empty">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        <p>Say hello to {{ active_user.name }} 👋</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <form class="chat-input-row" method="POST" action="{{ url_for('chat.send_message', receiver_id=active_user.id) }}">
+                    <input type="text" name="content" placeholder="Type a message..." required autocomplete="off">
+                    <button type="submit" aria-label="Send message">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </form>
+            {% else %}
+                <div class="chat-empty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <p>Select a conversation to start chatting.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

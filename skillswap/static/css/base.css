@@ -1,0 +1,246 @@
+/* ============================================================
+   base.css
+   The foundation stylesheet: CSS custom properties (variables),
+   resets, and global element styling. Every other stylesheet in
+   this project relies on the variables defined here — this keeps
+   the whole site visually consistent from one place.
+   ============================================================ */
+
+/* ---- Google Fonts ---- */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+/* ============================================================
+   DESIGN TOKENS (CSS Variables)
+   ============================================================ */
+:root {
+    /* ---- Colors: Primary (Emerald/Teal) ---- */
+    --color-primary: #0E7C66;
+    --color-primary-light: #14A085;
+    --color-primary-dark: #095C4B;
+    --color-primary-50: #E6F5F2;
+
+    /* ---- Colors: Accent (Warm Coral) ---- */
+    --color-accent: #FF6B4A;
+    --color-accent-light: #FF8F73;
+    --color-accent-dark: #E5502F;
+
+    /* ---- Neutrals ---- */
+    --color-ink: #14181A;
+    --color-slate: #4B5563;
+    --color-mist: #8A93A0;
+    --color-border: #E4E8EB;
+    --color-surface: #FFFFFF;
+    --color-bg: #F7F8FA;
+    --color-bg-alt: #F1F4F3;
+
+    /* ---- Semantic ---- */
+    --color-success: #1FA97F;
+    --color-warning: #F5A623;
+    --color-error: #E5484D;
+    --color-info: #3B82F6;
+
+    /* ---- Gradients ---- */
+    --gradient-primary: linear-gradient(135deg, #0E7C66 0%, #14A085 50%, #2DD4A7 100%);
+    --gradient-warm: linear-gradient(135deg, #FF6B4A 0%, #FF8F73 100%);
+    --gradient-text: linear-gradient(135deg, #0E7C66 0%, #2DD4A7 100%);
+
+    /* ---- Typography ---- */
+    --font-heading: 'Sora', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.375rem;
+    --text-2xl: clamp(1.75rem, 2vw + 1rem, 2.25rem);
+    --text-3xl: clamp(2.25rem, 3vw + 1rem, 3rem);
+    --text-hero: clamp(2.5rem, 5vw + 1rem, 4.25rem);
+
+    /* ---- Spacing (8px base unit) ---- */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+    --space-9: 96px;
+    --space-10: 128px;
+
+    /* ---- Radius ---- */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 999px;
+
+    /* ---- Shadows ---- */
+    --shadow-xs: 0 1px 2px rgba(20, 24, 26, 0.04);
+    --shadow-sm: 0 2px 6px rgba(20, 24, 26, 0.06);
+    --shadow-md: 0 4px 12px rgba(20, 24, 26, 0.08);
+    --shadow-lg: 0 12px 32px rgba(20, 24, 26, 0.12);
+    --shadow-glow-primary: 0 4px 20px rgba(14, 124, 102, 0.25);
+    --shadow-glow-accent: 0 4px 20px rgba(255, 107, 74, 0.25);
+
+    /* ---- Layout ---- */
+    --max-width: 1280px;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   DARK MODE OVERRIDES
+   Applied when <body> has class "dark-theme" (toggled via JS,
+   see static/js/theme.js). We only need to flip the neutrals —
+   primary/accent colors stay legible on both.
+   ============================================================ */
+body.dark-theme {
+    --color-ink: #F1F4F3;
+    --color-slate: #C3CAD1;
+    --color-mist: #8A93A0;
+    --color-border: #2A3235;
+    --color-surface: #1A2124;
+    --color-bg: #0F1416;
+    --color-bg-alt: #171F21;
+    --color-primary: #2DD4A7;
+    --color-primary-50: rgba(45, 212, 167, 0.1);
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-ink);
+    background-color: var(--color-bg);
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+input, textarea, select {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+}
+
+h1 { font-size: var(--text-3xl); }
+h2 { font-size: var(--text-2xl); }
+h3 { font-size: var(--text-xl); }
+
+p {
+    color: var(--color-slate);
+}
+
+.text-gradient {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+}
+
+/* ============================================================
+   LAYOUT HELPERS
+   ============================================================ */
+.container {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--space-5);
+}
+
+.section {
+    padding-block: var(--space-9);
+}
+
+@media (max-width: 640px) {
+    .section {
+        padding-block: var(--space-7);
+    }
+}
+
+/* ============================================================
+   SCROLL-REVEAL ANIMATION
+   Elements with class "reveal" fade + rise into view.
+   Toggled by static/js/main.js using IntersectionObserver.
+   ============================================================ */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================================
+   SCROLLBAR (subtle, on-brand)
+   ============================================================ */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-mist);
+}

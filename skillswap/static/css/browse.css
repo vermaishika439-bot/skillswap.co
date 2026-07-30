@@ -1,0 +1,136 @@
+/* ============================================================
+   browse.css
+   Styles for the Browse Skills page: filter sidebar, search bar,
+   skill/teacher cards grid, and pagination controls.
+   ============================================================ */
+
+.browse-page {
+    padding-block: var(--space-6) var(--space-9);
+}
+
+.browse-header {
+    margin-bottom: var(--space-6);
+}
+.browse-header h1 { margin-bottom: var(--space-2); }
+
+.browse-search-row {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+}
+.browse-search-row .search-bar { flex: 1; box-shadow: var(--shadow-sm); }
+
+.browse-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: var(--space-6);
+    align-items: start;
+}
+
+/* ---- Filter sidebar ---- */
+.filter-sidebar {
+    position: sticky;
+    top: 100px;
+}
+.filter-group { margin-bottom: var(--space-6); }
+.filter-group h4 {
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-3);
+}
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
+    font-size: var(--text-sm);
+    color: var(--color-slate);
+    cursor: pointer;
+}
+.filter-option:hover { color: var(--color-primary); }
+.filter-option.active {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+.filter-option .count { margin-left: auto; color: var(--color-mist); font-size: var(--text-xs); }
+
+/* ---- Results grid ---- */
+.results-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-5);
+    font-size: var(--text-sm);
+    color: var(--color-mist);
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+}
+
+.skill-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+.skill-card-top {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+.skill-card-top .info h4 { font-size: var(--text-base); margin-bottom: 2px; }
+.skill-card-top .info span {
+    display: flex; align-items: center; gap: 4px;
+    font-size: var(--text-xs); color: var(--color-mist);
+}
+.skill-card-top .info span svg { width: 12px; height: 12px; }
+
+.skill-card .divider { height: 1px; background: var(--color-border); margin-block: var(--space-1); }
+
+.skill-card-section h5 {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-mist);
+    margin-bottom: var(--space-2);
+}
+
+/* ---- Pagination ---- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-8);
+}
+.page-btn {
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-slate);
+    border: 1px solid var(--color-border);
+    transition: var(--transition);
+}
+.page-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.page-btn.active {
+    background: var(--gradient-primary);
+    color: #fff;
+    border-color: transparent;
+}
+.page-btn.disabled { opacity: 0.4; pointer-events: none; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+    .browse-layout { grid-template-columns: 1fr; }
+    .filter-sidebar { position: static; }
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+    .skills-grid { grid-template-columns: 1fr; }
+    .browse-search-row { flex-direction: column; }
+}

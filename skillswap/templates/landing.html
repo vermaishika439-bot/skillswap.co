@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+{% block title %}SkillSwap — Trade Skills, Not Money{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section class="hero">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+
+    <div class="container hero-inner">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                Join 12,000+ people trading skills
+            </div>
+            <h1>Learn anything.<br>Teach what you <span class="text-gradient">know.</span></h1>
+            <p class="hero-subtitle">SkillSwap connects people who want to trade knowledge, not money. Teach Python, learn design. Teach guitar, learn Spanish. No courses. No fees. Just people.</p>
+
+            <div class="hero-cta-row">
+                <a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-lg">
+                    Start Swapping Skills
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+                <a href="{{ url_for('main.browse_skills') }}" class="btn btn-secondary btn-lg">Browse Skills</a>
+            </div>
+
+            <div class="hero-trust">
+                <div class="avatar-stack">
+                    <img src="{{ url_for('static', filename='images/illustrations/user1.jpg') }}" alt="" onerror="this.style.display='none'">
+                    <img src="{{ url_for('static', filename='images/illustrations/user2.jpg') }}" alt="" onerror="this.style.display='none'">
+                    <img src="{{ url_for('static', filename='images/illustrations/user3.jpg') }}" alt="" onerror="this.style.display='none'">
+                </div>
+                <p>Trusted by learners worldwide <span>— 4.9/5 average rating</span></p>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-float-card card-1 card-glass">
+                <div class="swap-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                </div>
+                <div>
+                    <h4>Python ⇄ Design</h4>
+                    <p>Maria & Jordan matched</p>
+                </div>
+            </div>
+            <div class="hero-float-card card-2 card-glass">
+                <div class="swap-icon" style="background: var(--gradient-warm);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                </div>
+                <div>
+                    <h4>2,400 hrs</h4>
+                    <p>Taught this month</p>
+                </div>
+            </div>
+            <div class="hero-float-card card-3 card-glass">
+                <div class="swap-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                </div>
+                <div>
+                    <h4>4.9 Rating</h4>
+                    <p>From 3,200 swaps</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SEARCH SKILLS SECTION
+     ============================================================ -->
+<section class="search-section">
+    <div class="container search-bar-wrapper">
+        <form class="search-bar" action="{{ url_for('main.browse_skills') }}" method="GET">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" name="q" placeholder="Search for a skill — 'UI Design', 'Spanish', 'Guitar'...">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        <div class="search-tags">
+            <span>Popular:</span>
+            <a href="{{ url_for('main.browse_skills', q='Python') }}" class="chip chip-teach">Python</a>
+            <a href="{{ url_for('main.browse_skills', q='Graphic Design') }}" class="chip chip-teach">Graphic Design</a>
+            <a href="{{ url_for('main.browse_skills', q='Spanish') }}" class="chip chip-teach">Spanish</a>
+            <a href="{{ url_for('main.browse_skills', q='Photography') }}" class="chip chip-teach">Photography</a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     FEATURED TEACHERS
+     ============================================================ -->
+<section class="section" id="featured-teachers">
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="eyebrow">Featured Members</span>
+            <h2>Learn from people who love to teach</h2>
+            <p>Real people, real skills, ready to trade knowledge with you.</p>
+        </div>
+
+        <div class="teachers-grid">
+            {% for teacher in featured_teachers %}
+            <div class="card card-hover teacher-card reveal">
+                <img src="{{ url_for('static', filename='uploads/profile_pics/' + teacher.profile_image) }}"
+                     alt="{{ teacher.name }}" class="avatar avatar-lg"
+                     onerror="this.src='{{ url_for('static', filename='images/illustrations/default-avatar.png') }}'">
+                <h3>{{ teacher.name }}</h3>
+                <div class="teacher-location">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    {{ teacher.location or "Remote" }}
+                </div>
+                <div class="chip-group">
+                    {% if teacher.skills %}
+                        {% for skill in teacher.skills.split(',')[:3] %}
+                            <span class="chip chip-teach">{{ skill }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="chip chip-teach">New Member</span>
+                    {% endif %}
+                </div>
+                <a href="{{ url_for('profile.view_profile', user_id=teacher.id) }}" class="btn btn-secondary btn-sm btn-block">View Profile</a>
+            </div>
+            {% else %}
+            <p style="grid-column: 1/-1; text-align:center;">Be the first to join SkillSwap — sign up and appear here!</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     HOW SKILLSWAP WORKS
+     ============================================================ -->
+<section class="section" id="how-it-works" style="background: var(--color-bg-alt); border-radius: var(--radius-xl); margin-inline: var(--space-5); width: auto;">
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="eyebrow">Simple Process</span>
+            <h2>How SkillSwap works</h2>
+            <p>Three steps between you and your next skill.</p>
+        </div>
+
+        <div class="steps-grid">
+            <div class="step-card reveal">
+                <div class="step-number">1</div>
+                <h3>Create your profile</h3>
+                <p>List the skills you can teach and the ones you're dying to learn.</p>
+            </div>
+            <div class="step-card reveal">
+                <div class="step-number">2</div>
+                <h3>Find your match</h3>
+                <p>Browse teachers, or let SkillSwap suggest people who want what you offer.</p>
+            </div>
+            <div class="step-card reveal">
+                <div class="step-number">3</div>
+                <h3>Swap & grow</h3>
+                <p>Chat, schedule a session, and trade knowledge — no money required.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     CATEGORIES
+     ============================================================ -->
+<section class="section" id="categories">
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="eyebrow">Explore</span>
+            <h2>Find skills by category</h2>
+            <p>From code to canvas — there's a swap for everyone.</p>
+        </div>
+
+        <div class="categories-grid">
+            {% set cats = [
+                ('Programming', 'M16 18l6-6-6-6M8 6l-6 6 6 6'),
+                ('Design', 'M12 19l7-7 3 3-7 7-3-3zM18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z'),
+                ('Music', 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z'),
+                ('Language', 'M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6')
+            ] %}
+            {% for name, path in cats %}
+            <a href="{{ url_for('main.browse_skills', category=name) }}" class="card card-hover category-card reveal">
+                <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="{{ path }}"></path></svg></div>
+                <h4>{{ name }}</h4>
+                <p>Explore teachers</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     COMMUNITY STATISTICS
+     ============================================================ -->
+<section class="section">
+    <div class="stats-section reveal">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number" data-count="{{ total_users or 12400 }}">0</div>
+                <p>Active Members</p>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="{{ total_skills or 850 }}">0</div>
+                <p>Skills Listed</p>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="{{ total_swaps or 3200 }}">0</div>
+                <p>Successful Swaps</p>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="98">0</div>
+                <p>% Satisfaction Rate</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section class="section">
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="eyebrow">Testimonials</span>
+            <h2>Loved by learners and teachers alike</h2>
+        </div>
+
+        <div class="testimonials-grid">
+            <div class="card testimonial-card reveal">
+                <div class="stars">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                </div>
+                <p class="quote">"I taught someone Excel and learned watercolor painting in return. Never thought a spreadsheet skill could get me art lessons."</p>
+                <div class="testimonial-author">
+                    <img src="{{ url_for('static', filename='images/illustrations/default-avatar.png') }}" class="avatar avatar-sm" alt="">
+                    <div><h4>Amara O.</h4><span>Product Manager</span></div>
+                </div>
+            </div>
+            <div class="card testimonial-card reveal">
+                <div class="stars">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                </div>
+                <p class="quote">"SkillSwap replaced my $50/month course subscription. I'm learning faster because I'm learning from an actual human."</p>
+                <div class="testimonial-author">
+                    <img src="{{ url_for('static', filename='images/illustrations/default-avatar.png') }}" class="avatar avatar-sm" alt="">
+                    <div><h4>Dev Patel</h4><span>Frontend Developer</span></div>
+                </div>
+            </div>
+            <div class="card testimonial-card reveal">
+                <div class="stars">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+                </div>
+                <p class="quote">"The community here is so much warmer than any course platform. People actually want to help you get better."</p>
+                <div class="testimonial-author">
+                    <img src="{{ url_for('static', filename='images/illustrations/default-avatar.png') }}" class="avatar avatar-sm" alt="">
+                    <div><h4>Lena Fischer</h4><span>Illustrator</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     CALL TO ACTION
+     ============================================================ -->
+<section class="cta-section">
+    <div class="cta-box reveal">
+        <h2>Your next skill is one swap away.</h2>
+        <p>Join thousands trading knowledge instead of paying for it.</p>
+        <a href="{{ url_for('auth.signup') }}" class="btn btn-accent btn-lg">Create Your Free Account</a>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+{% endblock %}

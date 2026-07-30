@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SkillSwap — Trade Skills, Not Money{% endblock %}</title>
+
+    <!-- Global stylesheets loaded on every page -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dark-mode.css') }}">
+
+    <!-- Page-specific stylesheet slot -->
+    {% block extra_css %}{% endblock %}
+
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}" type="image/svg+xml">
+
+    <!-- Loaded in <head> (not before </body>) so the correct theme applies
+         before the page paints, avoiding a flash of the wrong theme -->
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</head>
+
+<body>
+
+    {% include "partials/navbar.html" %}
+
+    <main>
+        {% include "partials/flash_messages.html" %}
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include "partials/footer.html" %}
+
+    <!-- Global scripts loaded on every page -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- Page-specific script slot -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

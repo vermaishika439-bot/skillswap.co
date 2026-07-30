@@ -1,0 +1,41 @@
+/* ============================================================
+   dark-mode.css
+   Most dark-mode theming happens automatically because components
+   use CSS variables (redefined in base.css under body.dark-theme).
+   This file only holds the FEW exceptions that need explicit
+   overrides — things like image brightness or shadow intensity
+   that don't translate well through variables alone.
+   ============================================================ */
+
+body.dark-theme {
+    color-scheme: dark;
+}
+
+/* Shadows need to be stronger/darker on dark backgrounds to read as elevation */
+body.dark-theme .card,
+body.dark-theme .card-hover:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Hero mesh-gradient blobs are dimmed slightly so they don't overpower dark bg */
+body.dark-theme .hero-blob {
+    opacity: 0.25;
+}
+
+/* Illustrations/icons that assume a light background get a subtle dim */
+body.dark-theme .illustration {
+    filter: brightness(0.85);
+}
+
+/* Form inputs: slightly lighter surface than page background for contrast */
+body.dark-theme .form-input,
+body.dark-theme .form-textarea,
+body.dark-theme .form-select {
+    background: var(--color-bg-alt);
+}
+
+/* Skeleton shimmer needs darker tones in dark mode */
+body.dark-theme .skeleton {
+    background: linear-gradient(90deg, #1A2124 25%, #232C2F 50%, #1A2124 75%);
+    background-size: 200% 100%;
+}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Settings — SkillSwap{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}"> <!-- reuse image-upload styles -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container settings-page">
+    <h1 style="margin-bottom: var(--space-6);">Settings</h1>
+
+    <div class="settings-layout">
+
+        <!-- ---------------- SETTINGS NAV ---------------- -->
+        <nav class="settings-nav">
+            <a href="#profile-section" class="active">Edit Profile</a>
+            <a href="#password-section">Change Password</a>
+            <a href="#appearance-section">Appearance</a>
+            <a href="#danger-section">Delete Account</a>
+        </nav>
+
+        <div>
+            <!-- ---------------- EDIT PROFILE ---------------- -->
+            <div class="card settings-section" id="profile-section">
+                <div class="settings-section-header">
+                    <h3>Edit Profile</h3>
+                    <p>Update your public profile information.</p>
+                </div>
+                <form method="POST" action="{{ url_for('profile.settings') }}" enctype="multipart/form-data">
+                    <input type="hidden" name="form_type" value="edit_profile">
+
+                    <div class="image-upload">
+                        <div class="image-upload-preview" id="settingsImagePreview">
+                            <img src="{{ url_for('static', filename='uploads/profile_pics/' + user.profile_image) }}" alt=""
+                                 onerror="this.src='{{ url_for('static', filename='images/illustrations/default-avatar.png') }}'">
+                        </div>
+                        <div>
+                            <label class="btn btn-secondary btn-sm image-upload-btn" for="profile_image">Change Photo</label>
+                            <input type="file" id="profile_image" name="profile_image" accept="image/*" style="display:none;">
+                            <p class="form-hint">PNG or JPG, up to 3MB.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="name">Full Name</label>
+                            <input class="form-input" type="text" id="name" name="name" value="{{ user.name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="location">Location</label>
+                            <input class="form-input" type="text" id="location" name="location" value="{{ user.location }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bio">Bio</label>
+                        <textarea class="form-textarea" id="bio" name="bio">{{ user.bio }}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+
+            <!-- ---------------- CHANGE PASSWORD ---------------- -->
+            <div class="card settings-section" id="password-section">
+                <div class="settings-section-header">
+                    <h3>Change Password</h3>
+                    <p>Choose a strong password you don't use elsewhere.</p>
+                </div>
+                <form method="POST" action="{{ url_for('profile.settings') }}">
+                    <input type="hidden" name="form_type" value="change_password">
+                    <div class="form-group">
+                        <label class="form-label" for="current_password">Current Password</label>
+                        <input class="form-input" type="password" id="current_password" name="current_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="new_password">New Password</label>
+                        <input class="form-input" type="password" id="new_password" name="new_password" required minlength="8">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                </form>
+            </div>
+
+            <!-- ---------------- APPEARANCE / DARK MODE ---------------- -->
+            <div class="card settings-section" id="appearance-section">
+                <div class="settings-section-header">
+                    <h3>Appearance</h3>
+                    <p>Choose how SkillSwap looks on your device.</p>
+                </div>
+                <div class="settings-toggle-row">
+                    <div class="label-text">
+                        <h4>Dark Mode</h4>
+                        <p>Switch between light and dark themes.</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ---------------- DANGER ZONE ---------------- -->
+            <div class="card settings-section danger-zone" id="danger-section">
+                <div class="settings-section-header">
+                    <h3>Delete Account</h3>
+                    <p>This permanently deletes your profile, skills, and message history. This cannot be undone.</p>
+                </div>
+                <button type="button" class="btn btn-danger" id="deleteAccountBtn">Delete My Account</button>
+
+                <form method="POST" action="{{ url_for('profile.settings') }}" id="deleteAccountForm" style="display:none;">
+                    <input type="hidden" name="form_type" value="delete_account">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

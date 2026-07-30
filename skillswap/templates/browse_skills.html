@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Browse Skills — SkillSwap{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/browse.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container browse-page">
+
+    <div class="browse-header">
+        <h1>Browse Skills</h1>
+        <p>Find someone who teaches what you want to learn.</p>
+    </div>
+
+    <form class="browse-search-row" method="GET" action="{{ url_for('main.browse_skills') }}">
+        <div class="search-bar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Search skills, e.g. 'Python' or 'Photography'...">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+        {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+    </form>
+
+    <div class="browse-layout">
+
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+            <div class="card">
+                <div class="filter-group">
+                    <h4>Category</h4>
+                    <a href="{{ url_for('main.browse_skills', q=search_query) }}" class="filter-option {{ 'active' if not selected_category }}">All Categories</a>
+                    {% for cat in categories %}
+                    <a href="{{ url_for('main.browse_skills', q=search_query, category=cat) }}" class="filter-option {{ 'active' if selected_category == cat }}">{{ cat }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
+
+        <!-- Results -->
+        <div>
+            <div class="results-meta">
+                <span>{{ users|length }} teacher{{ 's' if users|length != 1 else '' }} found</span>
+            </div>
+
+            <div class="skills-grid">
+                {% for u in users %}
+                <div class="card card-hover skill-card">
+                    <div class="skill-card-top">
+                        <img src="{{ url_for('static', filename='uploads/profile_pics/' + u.profile_image) }}"
+                             class="avatar avatar-md" alt=""
+                             onerror="this.src='{{ url_for('static', filename='images/illustrations/default-avatar.png') }}'">
+                        <div class="info">
+                            <h4>{{ u.name }}</h4>
+                            <span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                {{ u.location or "Remote" }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="skill-card-section">
+                        <h5>Teaches</h5>
+                        <div class="chip-group">
+                            {% if u.skills_offered %}
+                                {% for s in u.skills_offered.split(',')[:3] %}<span class="chip chip-teach">{{ s }}</span>{% endfor %}
+                            {% else %}<span class="form-hint">Nothing listed yet</span>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="skill-card-section">
+                        <h5>Wants to Learn</h5>
+                        <div class="chip-group">
+                            {% if u.skills_wanted %}
+                                {% for s in u.skills_wanted.split(',')[:3] %}<span class="chip chip-learn">{{ s }}</span>{% endfor %}
+                            {% else %}<span class="form-hint">Nothing listed yet</span>{% endif %}
+                        </div>
+                    </div>
+
+                    <a href="{{ url_for('profile.view_profile', user_id=u.id) }}" class="btn btn-secondary btn-block" style="margin-top: var(--space-2);">View Profile</a>
+                </div>
+                {% else %}
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <p>No teachers found. Try a different search term or category.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if total_pages > 1 %}
+            <div class="pagination">
+                <a href="{{ url_for('main.browse_skills', q=search_query, category=selected_category, page=page-1) }}"
+                   class="page-btn {{ 'disabled' if page <= 1 }}">‹</a>
+                {% for p in range(1, total_pages + 1) %}
+                <a href="{{ url_for('main.browse_skills', q=search_query, category=selected_category, page=p) }}"
+                   class="page-btn {{ 'active' if p == page }}">{{ p }}</a>
+                {% endfor %}
+                <a href="{{ url_for('main.browse_skills', q=search_query, category=selected_category, page=page+1) }}"
+                   class="page-btn {{ 'disabled' if page >= total_pages }}">›</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/browse.js') }}"></script>
+{% endblock %}

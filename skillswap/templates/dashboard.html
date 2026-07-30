@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — SkillSwap{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container dash-page">
+
+    <!-- Welcome Banner -->
+    <div class="dash-welcome">
+        <div>
+            <h1>Welcome back, {{ user.name.split(' ')[0] }} 👋</h1>
+            <p>You have {{ pending_count }} pending request{{ 's' if pending_count != 1 else '' }} waiting on you.</p>
+        </div>
+        <a href="{{ url_for('main.browse_skills') }}" class="btn btn-accent">Find Someone to Learn From</a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="dash-stats">
+        <div class="card dash-stat-card">
+            <div class="dash-stat-icon icon-teal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+            </div>
+            <div><div class="stat-value">{{ accepted_count }}</div><div class="stat-label">Active Swaps</div></div>
+        </div>
+        <div class="card dash-stat-card">
+            <div class="dash-stat-icon icon-coral">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+            </div>
+            <div><div class="stat-value">{{ pending_count }}</div><div class="stat-label">Pending Requests</div></div>
+        </div>
+        <div class="card dash-stat-card">
+            <div class="dash-stat-icon icon-blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div><div class="stat-value">{{ unread_messages }}</div><div class="stat-label">Unread Messages</div></div>
+        </div>
+        <div class="card dash-stat-card">
+            <div class="dash-stat-icon icon-gold">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path></svg>
+            </div>
+            <div><div class="stat-value">{{ avg_rating }}</div><div class="stat-label">Rating ({{ avg_rating_total }} reviews)</div></div>
+        </div>
+    </div>
+
+    <div class="dash-grid">
+        <!-- LEFT: main content -->
+        <div>
+            <div class="dash-panel">
+                <div class="dash-panel-header">
+                    <h3>Recent Swap Requests</h3>
+                    <a href="{{ url_for('swap.swap_requests') }}">View all</a>
+                </div>
+                <div class="card">
+                    {% for r in recent_requests %}
+                    <div class="request-item">
+                        {% set other_name = r.sender_name if r.sender_id != user.id else r.receiver_name %}
+                        {% set other_image = r.sender_image if r.sender_id != user.id else r.receiver_image %}
+                        <img src="{{ url_for('static', filename='uploads/profile_pics/' + other_image) }}"
+                             class="avatar avatar-md" alt=""
+                             onerror="this.src='{{ url_for('static', filename='images/illustrations/default-avatar.png') }}'">
+                        <div class="request-meta">
+                            <h4>{{ other_name }}</h4>
+                            <p>Offering <strong>{{ r.offered_skill }}</strong> for <strong>{{ r.wanted_skill }}</strong></p>
+                        </div>
+                        <span class="badge badge-{{ r.status }}"><span class="badge-dot"></span>{{ r.status|capitalize }}</span>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                        <p>No swap requests yet. <a href="{{ url_for('main.browse_skills') }}" style="color: var(--color-primary); font-weight:600;">Browse skills</a> to send your first one.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="dash-panel">
+                <div class="dash-panel-header">
+                    <h3>Quick Actions</h3>
+                </div>
+                <div class="quick-actions">
+                    <a href="{{ url_for('main.browse_skills') }}" class="card card-hover quick-action-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <span>Find Skills</span>
+                    </a>
+                    <a href="{{ url_for('chat.chat') }}" class="card card-hover quick-action-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        <span>Messages</span>
+                    </a>
+                    <a href="{{ url_for('profile.settings') }}" class="card card-hover quick-action-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <span>Settings</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: sidebar -->
+        <div>
+            <div class="dash-panel card">
+                <div class="dash-panel-header">
+                    <h3>My Skills</h3>
+                    <a href="{{ url_for('profile.settings') }}">Edit</a>
+                </div>
+                <div class="my-skills-block">
+                    <h4>I Teach</h4>
+                    <div class="chip-group">
+                        {% for s in skills_offered %}<span class="chip chip-teach">{{ s.skill_name }}</span>{% else %}<p class="form-hint">None added yet.</p>{% endfor %}
+                    </div>
+                </div>
+                <div class="my-skills-block">
+                    <h4>I Want to Learn</h4>
+                    <div class="chip-group">
+                        {% for s in skills_wanted %}<span class="chip chip-learn">{{ s.skill_name }}</span>{% else %}<p class="form-hint">None added yet.</p>{% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="dash-panel card" style="margin-top: var(--space-6);">
+                <div class="dash-panel-header">
+                    <h3>Notifications</h3>
+                </div>
+                {% if pending_count > 0 %}
+                <div class="notif-item">
+                    <div class="notif-dot"></div>
+                    <div><p>You have {{ pending_count }} new swap request{{ 's' if pending_count != 1 else '' }}.</p><span>Just now</span></div>
+                </div>
+                {% endif %}
+                {% if unread_messages > 0 %}
+                <div class="notif-item">
+                    <div class="notif-dot"></div>
+                    <div><p>You have {{ unread_messages }} unread message{{ 's' if unread_messages != 1 else '' }}.</p><span>Recently</span></div>
+                </div>
+                {% endif %}
+                {% if pending_count == 0 and unread_messages == 0 %}
+                <p class="form-hint">You're all caught up! 🎉</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
