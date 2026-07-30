@@ -8,7 +8,7 @@ Then visit http://127.0.0.1:5000 in your browser.
 
 from flask import Flask
 from datetime import timedelta
-
+import os
 from config import Config
 from models.db import init_db
 
@@ -45,5 +45,6 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    # debug=True gives auto-reload + detailed error pages during development
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
+
